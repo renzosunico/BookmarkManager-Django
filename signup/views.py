@@ -6,6 +6,7 @@ User = get_user_model()
 
 from braces.views import AnonymousRequiredMixin
 
+
 class SignupView(AnonymousRequiredMixin, FormView):
 
     model = User

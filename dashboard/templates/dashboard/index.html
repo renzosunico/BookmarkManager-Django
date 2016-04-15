@@ -1,0 +1,139 @@
+{% extends 'base.html' %}
+
+
+{% block contents %}
+
+{% load staticfiles %}
+<link href="{% static 'dashboard/index.css' %}" rel="stylesheet"></link>
+
+<div class="row">
+    <div class="inner-box col-lg-8">
+        {% include 'form_error.html' %}
+        <form method="post" id="create-bookmark" onsubmit="append_http()" action="{% url 'dashboard:dashboard' %}">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="Title">Title *</label>
+                {{ form.title }}
+            </div>
+
+            <div class="form-group">
+                <label for="Link">Uniform Resource Locator *</label>
+                {{ form.link }}
+            </div>
+
+            <div class="form-group">
+                <label for="Tags">Tags *</label>
+                {{ form.tags }}
+            </div>
+
+            <button type="submit" class="btn btn-success pull-right">Bookmark it!</button>
+            <div class="clearfix"></div>
+        </form>
+    </div>
+
+    <div class="clearfix"></div>
+
+    </div>
+</br>
+<div class="row">
+    <div class="bookmarks col-lg-8">
+       {% for bookmark in bookmarks %}
+            <div class="bs-callout bs-callout-primary bg-white" id="form{{bookmark.id}}">
+                <div class="row">
+                    <div class="col-lg-12">
+
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="bookmark-view" id="book{{bookmark.id}}">
+                            <h4 class="title"><a href="{{bookmark.link}}">{{bookmark.title}}</a></h4>
+                            {% if bookmark.user.id == request.user.id %}
+                            <span class="delete-btn glyphicon glyphicon-trash" onclick="view_delete({{bookmark.id}})"></span>
+                            <!-- <a href="{% url 'dashboard:edit-bookmark' pk=bookmark.id %}" class=""><span class="edit-btn glyphicon glyphicon-pencil" onclick=""></a> -->
+                            <span class="edit-btn glyphicon glyphicon-pencil" onclick="view_edit({{bookmark.id}})"></span></br>
+                            {% endif %}
+                            <span class="glyphicon glyphicon-tags">
+                                {% for booktag in bookmark.bookmarktag_set.all %}
+                                    {{ booktag.get_count }}{{ booktag.tag|capfirst }}
+                                {% endfor %}
+                            </span>
+                            <br>
+                            <span class="user pull-right">Created by: {{bookmark.user.username|capfirst}} on {{bookmark.created}}</span></br>
+                        </div>
+                        <div class="bookmark-delete" id="del{{bookmark.id}}">
+                            <form method="post" action="{% url 'dashboard:delete-bookmark' pk=bookmark.id %}">{% csrf_token %}
+                                <input type="hidden" name="pk" value="{{bookmark.id}}">
+                                <button type="submit" value="submit" class="btn btn-danger btn-block">Delete {{bookmark.title}}?</button>
+                                <span class="btn btn-default btn-block" onclick="close_delete({{bookmark.id}})">Cancel</span>
+                            </form>
+                        </div>
+                        <div class="bookmark-edit" id="edit{{bookmark.id}}">
+                            <h4>Edit</h4>
+                            <form method="post" action="{% url 'dashboard:edit-bookmark' pk=bookmark.id %}">{% csrf_token %}
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Title</span></div>
+                                        <input type="input" class="form-control" name="title" value="{{bookmark.title}}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Link</span></div>
+                                        <input type="input" class="form-control" name="link" value="{{bookmark.link}}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="input-group">
+                                      <div class="input-group-addon"><span class="glyphicon glyphicon-tag"></span></div>
+                                      <input type="input" class="form-control" name="tags" value="{{ bookmark.bookmarktag_set.all|join:', '}}">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-success">Edit</button>
+                                <a onclick="close_edit({{bookmark.id}})" class="btn btn-default">Cancel</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+    function append_http() {
+        var link = document.getElementById('id_link').value;
+        if (!link.match('^(?:http|ftp)s?://')) {
+            document.getElementById('id_link').value = 'http://' + link;
+        }
+    }
+
+    function close_delete(delete_form) {
+        document.getElementById('del'+delete_form).style = "display: none;"
+        document.getElementById('book'+delete_form).style = "display: block;"
+        document.getElementById('form' + delete_form).className = "bs-callout bs-callout-primary bg-white";
+    }
+
+    function view_delete(view_form) {
+        document.getElementById('book' + view_form).style = "display: none;"
+        document.getElementById('form' + view_form).className = "bs-callout bs-callout-danger bg-white";
+        document.getElementById('del' + view_form).style = "display: block;"
+    }
+
+    function view_edit(id) {
+        document.getElementById('book' + id).style = "display: none;";
+        document.getElementById('edit' + id).style = "display: block;";
+        document.getElementById('form' + id).className = "bs-callout bs-callout-success bg-white";
+    }
+
+    function close_edit(id) {
+        document.getElementById('edit'+ id).style = "display: none;";
+        document.getElementById('book'+ id).style = "display: block;";
+        document.getElementById('form' + id).className = "bs-callout bs-callout-primary bg-white";
+    }
+
+</script>
+
+{% endblock contents %}

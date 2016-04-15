@@ -1,6 +1,5 @@
 from .forms import LoginForm
 from django.shortcuts import redirect
-from django.http import HttpResponseRedirect
 
 from django.views.generic.edit import FormView
 from django.views.generic import View
@@ -22,7 +21,7 @@ class LoginView(AnonymousRequiredMixin, FormView):
         login(self.request, form.get_user())
         if self.request.session.test_cookie_worked():
             self.request.session.delete_test_cookie()
-        return redirect('dashboard:dashboard')
+        return redirect(self.get_next_url())
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
@@ -31,9 +30,8 @@ class LoginView(AnonymousRequiredMixin, FormView):
         request.session.set_test_cookie()
         return super(LoginView, self).dispatch(request, *args, **kwargs)
 
-    def post(self):
-        if self.request.user.is_authenticated():
-            redirect()
+    def get_next_url(self):
+        return self.request.POST.get('next', 'dashboard:dashboard')
 
 
 class LogoutProcess(View):

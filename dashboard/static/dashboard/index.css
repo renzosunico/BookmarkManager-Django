@@ -1,0 +1,69 @@
+.inner-box {
+    background-color: #FFFFFF;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    padding: 15px 20px 15px 20px;
+}
+
+.bg-white {
+    background-color: #FFFFFF;
+}
+
+.bookmarks {
+    padding: 0px 0px 0px 0px;
+}
+
+.title {
+    font-size: 20px;
+}
+
+.user {
+    color: #a6abb0;
+    font-size: 12px;
+    font-style: italic;
+}
+
+h4 {
+    padding: 0
+    margin: 0
+}
+
+.col-center {
+    float: none;
+    margin: 0 auto;
+}
+
+.bookmark-delete {
+    padding-left: 30px;
+    padding-right: 30px;
+    display: none;
+}
+
+.bookmark-view h4 {
+    display: inline-block;
+}
+
+.delete-btn {
+    display: inline-block;
+    float: right;
+}
+
+.delete-btn:hover {
+    color: red;
+}
+
+.bookmark-edit {
+    display: none;
+}
+
+.edit-btn {
+    display: inline;
+    margin-right: 15px;
+    float: right;
+}
+
+.edit-btn:hover {
+    color: green;
+}

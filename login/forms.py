@@ -11,7 +11,7 @@ class LoginForm(AuthenticationForm):
     username = forms.CharField(
         max_length=30,
         widget=forms.TextInput(
-            attrs={'required': 'required', 'class': 'form-control input-md', 'placeholder': 'Username / Email'}
+            attrs={'required': 'required', 'class': 'form-control input-md', 'placeholder': 'Username'}
         )
     )
 
